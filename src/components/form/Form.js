@@ -7,7 +7,15 @@ const Form = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [errors, setErrors] = useState({ name: '', age: '', email: '', emailFormat: '' });
+    const [isFormSubmit, setFormSubmit] = useState(false);
     let isFormValid = true;
+
+    let formData = {
+        name: '',
+        age: 0,
+        email: '',
+        phone: 0
+    };
 
     const handleNameInputChange = (e) => {
         e.preventDefault();
@@ -31,7 +39,20 @@ const Form = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        handleFormValidation();
+
+        if (handleFormValidation() == false) {
+            return;
+        }
+
+        formData = {
+            name: name,
+            age: age,
+            email: email,
+            phone: phone
+        };
+
+        setFormSubmit(true);
+
     }
 
     const handleFormValidation = () => {
@@ -84,21 +105,31 @@ const Form = () => {
             setErrors({ ...errors, age: '' });
         }
 
+        return isFormValid;
+
         setTimeout(() => {
             console.log(errors);
         }, 1000);
     }
 
 
+    const handleReset = () => {
+        setName('');
+        setEmail('');
+        setAge(0);
+        setPhone(0);
+        setFormSubmit(false);
+        setErrors({});
+    };
+
+
     return (
         <div className='form-container'>
-
             <div className='form-header'>
                 <h3 className='form-heading'>
                     User Info Form
                 </h3>
             </div>
-
             <form onSubmit={handleSubmit}>
                 <div className='input-container'>
                     <div className='errors text-danger'>{errors['name']}</div>
@@ -126,10 +157,17 @@ const Form = () => {
                 </div>
 
                 <input type='submit' className='btn btn-primary' />
-                <button className='btn btn-secondary reset-btn'>Reset</button>
+                <button className='btn btn-secondary reset-btn' onClick={handleReset}>Reset</button>
             </form>
-
-
+            {
+                isFormSubmit == true ? (<div className='form-data'>
+                    <ul className='form-data-list'>
+                        <li className='form-data-list-item'>Name: {name}</li>
+                        <li className='form-data-list-item'>Age: {age}</li>
+                        <li className='form-data-list-item'>Phone: {phone}</li>
+                        <li className='form-data-list-item'>Email: {email}</li>
+                    </ul>
+                </div>) : ''}
         </div>);
 }
 
